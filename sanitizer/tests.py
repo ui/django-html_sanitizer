@@ -1,8 +1,10 @@
 from django import forms
 from django.db import models
 from django.test import TestCase
+from django.test.utils import override_settings
 
-from sanitizer.templatetags.sanitizer import sanitize, sanitize_allow, sanitize_text
+from sanitizer.templatetags.sanitizer import (sanitize, sanitize_allow,
+    escape_html, strip_filter, strip_html)
 from .forms import SanitizedCharField as SanitizedFormField
 from .models import SanitizedCharField, SanitizedTextField
 
@@ -27,12 +29,14 @@ class TestForm(forms.Form):
 
 class SanitizerTest(TestCase):
 
-
+    @override_settings(SANITIZER_ALLOWED_TAGS=['a'])
     def test_sanitize(self):
         """ Test sanitize function in templatetags """
-        self.assertEqual(sanitize('test<script></script>'), 'test')
-        self.assertEqual(sanitize('<a href="">test</a>'), '<a href="">test</a>')
+        self.assertEqual(sanitize('test<script></script>'), 'test&lt;script&gt;&lt;/script&gt;')
 
+    def test_strip_filter(self):
+        """ Test strip_html filter """
+        self.assertEqual(strip_filter('test<script></script>'), 'test')
 
     def test_sanitize_allow(self):
         """ Test sanitize_allow function in templatetags """
@@ -60,13 +64,16 @@ class SanitizerTest(TestCase):
         self.assertEqual(form.cleaned_data['test_field'],
                          '<a href="">foo</a>&lt;em class=""&gt;&lt;/em&gt;')
 
-    def test_sanitize_text(self):
+    def test_escape_html(self):
         html = '<a href="" class="">foo</a><em></em>'
-        self.assertEqual(sanitize_text(html, allowed_tags='a', allowed_attributes='href', strip=False),
+        self.assertEqual(escape_html(html, allowed_tags='a', allowed_attributes='href'),
                          '<a href="">foo</a>&lt;em&gt;&lt;/em&gt;')
-        self.assertEqual(sanitize_text(html, allowed_tags=['a'], allowed_attributes=['href'], strip=False),
+        self.assertEqual(escape_html(html, allowed_tags=['a'], allowed_attributes=['href']),
                          '<a href="">foo</a>&lt;em&gt;&lt;/em&gt;')
-        self.assertEqual(sanitize_text(html, allowed_tags='a', allowed_attributes='href', strip=True),
+    
+    def test_strip_html(self):
+        html = '<a href="" class="">foo</a><em></em>'
+        self.assertEqual(strip_html(html, allowed_tags='a', allowed_attributes='href'),
                          '<a href="">foo</a>')
-        self.assertEqual(sanitize_text(html, allowed_tags=['a'], allowed_attributes=['href'], strip=True),
+        self.assertEqual(strip_html(html, allowed_tags=['a'], allowed_attributes=['href']),
                          '<a href="">foo</a>')

@@ -8,7 +8,6 @@ import bleach
 
 ALLOWED_TAGS = getattr(settings, 'SANITIZER_ALLOWED_TAGS', [])
 ALLOWED_ATTRIBUTES = getattr(settings, 'SANITIZER_ALLOWED_ATTRIBUTES', [])
-STRIP = getattr(settings, 'SANITIZER_STRIP_TAGS', False)
 
 register = template.Library()
 
@@ -16,21 +15,41 @@ register = template.Library()
 @stringfilter
 def sanitize(value):
     '''
-    Sanitizes strings according to SANITIZER_ALLOWED_TAGS, SANITIZER_ALLOWED_ATTRIBUTES
-    and SANITIZER_STRIP_TAGS variables in settings.
+    Sanitizes strings according to SANITIZER_ALLOWED_TAGS and
+    SANITIZER_ALLOWED_ATTRIBUTES variables in settings.
 
     Example usage:
 
     {% load sanitizer %}
-    {{ post.content|santize }}
+    {{ post.content|escape_html }}
 
     '''
     if isinstance(value, basestring):
         value = bleach.clean(value, tags=ALLOWED_TAGS,
-                             attributes=ALLOWED_ATTRIBUTES, strip=STRIP)
+                             attributes=ALLOWED_ATTRIBUTES, strip=False)
     return value
 
-register.filter('sanitize', sanitize)
+register.filter('escape_html', sanitize)
+
+
+@stringfilter
+def strip_filter(value):
+    '''
+    Strips HTML tags from strings according to SANITIZER_ALLOWED_TAGS and
+    SANITIZER_ALLOWED_ATTRIBUTES variables in settings.
+
+    Example usage:
+
+    {% load sanitizer %}
+    {{ post.content|strip_html }}
+
+    '''
+    if isinstance(value, basestring):
+        value = bleach.clean(value, tags=ALLOWED_TAGS,
+                             attributes=ALLOWED_ATTRIBUTES, strip=True)
+    return value
+
+register.filter('strip_html', strip_filter)
 
 
 @stringfilter
@@ -60,7 +79,7 @@ register.filter('sanitize_allow', sanitize_allow)
 
 
 @register.simple_tag
-def sanitize_text(value, allowed_tags=[], allowed_attributes=[], strip=False):
+def escape_html(value, allowed_tags=[], allowed_attributes=[]):
     """
     Template tag to sanitize string values. It accepts lists of
     allowed tags or attributes in comma separated string or list format.
@@ -68,7 +87,7 @@ def sanitize_text(value, allowed_tags=[], allowed_attributes=[], strip=False):
     For example:
 
     {% load sanitizer %}
-    {% sanitize_text '<a href="">bar</a> <script>alert('baz')</script>' "a,img' 'href',src' %}
+    {% escape_html '<a href="">bar</a> <script>alert('baz')</script>' "a,img' 'href',src' %}
 
     Will output:
 
@@ -76,10 +95,36 @@ def sanitize_text(value, allowed_tags=[], allowed_attributes=[], strip=False):
 
     On django 1.4 you could also use keyword arguments:
 
-    {% sanitize_text '<a href="">bar</a>' allowed_tags="a,img' allowed_attributes='href',src' strip=True %}    
+    {% escape_html '<a href="">bar</a>' allowed_tags="a,img' allowed_attributes='href',src' %}    
 
     """
     if isinstance(value, basestring):
         value = bleach.clean(value, tags=allowed_tags,
-                             attributes=allowed_attributes, strip=strip)
+                             attributes=allowed_attributes, strip=False)
+    return value
+
+
+@register.simple_tag
+def strip_html(value, allowed_tags=[], allowed_attributes=[]):
+    """
+    Template tag to strip html from string values. It accepts lists of
+    allowed tags or attributes in comma separated string or list format.
+
+    For example:
+
+    {% load sanitizer %}
+    {% strip_html '<a href="">bar</a> <script>alert('baz')</script>' "a,img' 'href',src' %}
+
+    Will output:
+
+    <a href="">bar</a> alert('baz');
+
+    On django 1.4 you could also use keyword arguments:
+
+    {% strip_html '<a href="">bar</a>' allowed_tags="a,img' allowed_attributes='href',src' %}    
+
+    """
+    if isinstance(value, basestring):
+        value = bleach.clean(value, tags=allowed_tags,
+                             attributes=allowed_attributes, strip=True)
     return value
