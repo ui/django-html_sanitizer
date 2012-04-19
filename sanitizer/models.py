@@ -40,3 +40,9 @@ class SanitizedTextField(models.TextField):
         value = bleach.clean(value, tags=self._sanitizer_allowed_tags,
             attributes=self._sanitizer_allowed_attributes, strip=self._sanitizer_strip)
         return value
+
+from django.conf import settings
+if 'south' in settings.INSTALLED_APPS:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules([], ["^sanitizer\.models\.SanitizedCharField"])
+    add_introspection_rules([], ["^sanitizer\.models\.SanitizedTextField"])
