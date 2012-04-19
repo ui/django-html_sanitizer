@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import smart_unicode
-from sanitizer.templatetags.sanitizer import *
 
 import bleach
 
@@ -12,7 +12,6 @@ class SanitizedCharField(models.CharField):
         self._sanitizer_allowed_attributes = allowed_attributes
         self._sanitizer_strip = strip
         super(SanitizedCharField, self).__init__(*args, **kwargs)
-
 
     def to_python(self, value):
         value = super(SanitizedCharField, self).to_python(value)
@@ -41,7 +40,7 @@ class SanitizedTextField(models.TextField):
             attributes=self._sanitizer_allowed_attributes, strip=self._sanitizer_strip)
         return value
 
-from django.conf import settings
+
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
     add_introspection_rules([], ["^sanitizer\.models\.SanitizedCharField"])
