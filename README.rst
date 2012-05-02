@@ -15,7 +15,11 @@ Dependencies
 Installation
 ------------
 
-Add ``sanitizer`` to your INSTALLED_APPS::
+You'll first need to install the package::
+    
+    pip install django-html_sanitizer
+
+And then add ``sanitizer`` to your INSTALLED_APPS in django's ``settings.py``::
     
     INSTALLED_APPS = (
         # other apps
