@@ -7,7 +7,7 @@ import bleach
 
 class SanitizedCharField(models.CharField):
     
-    def __init__(self, allowed_tags, allowed_attributes, strip=False, *args, **kwargs):
+    def __init__(self, allowed_tags=None, allowed_attributes=None, strip=False, *args, **kwargs):
         self._sanitizer_allowed_tags = allowed_tags
         self._sanitizer_allowed_attributes = allowed_attributes
         self._sanitizer_strip = strip
@@ -22,7 +22,7 @@ class SanitizedCharField(models.CharField):
 
 class SanitizedTextField(models.TextField):
     
-    def __init__(self, allowed_tags, allowed_attributes, strip=False, *args, **kwargs):
+    def __init__(self, allowed_tags=None, allowed_attributes=None, strip=False, *args, **kwargs):
         self._sanitizer_allowed_tags = allowed_tags
         self._sanitizer_allowed_attributes = allowed_attributes
         self._sanitizer_strip = strip
