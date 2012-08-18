@@ -1,19 +1,21 @@
-Django Sanitizer
-================
+=====================
+Django HTML Sanitizer
+=====================
 
-Django sanitizer is an app that provides a set of utilities to easily sanitize/escape/clean
+Django HTML Sanitizer provides a set of utilities to easily sanitize/escape/clean
 HTML inputs in django. This app is built on top of `bleach <http://github.com/jsocol/bleach>`_,
 the excellent Python HTML sanitizer.
 
 
 Dependencies
-------------
+============
+
 - `django <http://djangoproject.com/>`_: http://djangoproject.com/
 - `bleach <http://github.com/jsocol/bleach>`_: http://github.com/jsocol/bleach
 
 
 Installation
-------------
+============
 
 You'll first need to install the package::
     
@@ -28,7 +30,7 @@ And then add ``sanitizer`` to your INSTALLED_APPS in django's ``settings.py``::
 
 
 Model Usage
------------
+===========
 
 Similar to bleach, django sanitizer is a whitelist (only allows specified tags 
 and attributes) based HTML sanitizer. Django sanitizer provides two model fields
@@ -54,9 +56,9 @@ Here's how to use it in django models::
 
 
 Form Usage
-----------
+==========
 
-Using django sanitizer in django forms is very similar to model usage::
+Using django HTML sanitizer in django forms is very similar to model usage::
     
     from django import forms
     from sanitizer.forms import SanitizedCharField, SanitizedTextField
@@ -70,11 +72,12 @@ Using django sanitizer in django forms is very similar to model usage::
 
 
 Template Usage
---------------
+==============
 
-Django sanitizer provides a few differents ways of cleaning HTML in templates:
+Django sanitizer provides a few differents ways of cleaning HTML in templates.
 
-- ``escape_html`` template tag
+``escape_html`` Template Tag
+----------------------------
 
 Example usage::
     
@@ -83,22 +86,27 @@ Example usage::
 
 Assuming ``post.content`` contains the string
 '<a href ="#">Example</a><script>alert("x")</script>', the above tag will
-output '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
+output::
+
+    '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
 
 
-- ``strip_html`` template tag
+``strip_html`` Template Tag
+---------------------------
 
 Example usage::
     
     {% load sanitizer %}
     {% strip_html post.content "a, p, img" "href, src" %}
 
-Assuming ``post.content`` contains the string
-'<a href ="#">Example</a><script>alert("x")</script>', the above tag will
-output '<a href ="#">Example</a>alert("x")'
+If ``post.content`` contains the string
+'<a href ="#">Example</a><script>alert("x")</script>', this will give you::
+
+    '<a href ="#">Example</a>alert("x")'
 
 
-- ``escape_html`` filter
+``escape_html`` Filter
+----------------------
 
 Escapes HTML tags from string based on settings. To use this filter you need to
 put these variables on settings.py:
@@ -112,18 +120,16 @@ For example if we have ``SANITIZER_ALLOWED_TAGS = ['a']``,
     {% load sanitizer %}
     {{ post.content|escape_html }}
 
-Assuming ``post.content`` contains the string
-'<a href ="#">Example</a><script>alert("x")</script>', the above filter will
-output '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
+If ``post.content`` contains the string
+'<a href ="#">Example</a><script>alert("x")</script>', it will give you::
+
+    '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
 
 
-- ``strip_html`` filter
+``strip_html`` Filter
+---------------------
 
-Strips HTML tags from text, allowing only whitelisted tags/attributes.
-To use this filter you need to put these variables on settings.py:
-
-* ``SANITIZER_ALLOWED_TAGS`` - a list of allowed tags (defaults to an empty list)
-* ``SANITIZER_ALLOWED_ATTRIBUTES`` - a list of allowed attributes (defaults to an empty list)
+Similar to ``escape_html`` filter, except it strips out offending HTML tags.
 
 For example if we have ``SANITIZER_ALLOWED_TAGS = ['a']``, 
 ``SANITIZER_ALLOWED_ATTRIBUTES = ['href']`` in settings.py, doing::
@@ -131,7 +137,8 @@ For example if we have ``SANITIZER_ALLOWED_TAGS = ['a']``,
     {% load sanitizer %}
     {{ post.content|strip_html }}
 
-Assuming ``post.content`` contains the string
-'<a href ="#">Example</a><script>alert("x")</script>', the above filter will
-output '<a href ="#">Example</a>alert("x")'
+If ``post.content`` contains the string
+'<a href ="#">Example</a><script>alert("x")</script>', we will get::
+
+    '<a href ="#">Example</a>alert("x")'
 
