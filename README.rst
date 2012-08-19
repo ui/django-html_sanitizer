@@ -145,4 +145,5 @@ If ``post.content`` contains the string
 Changelog
 =========
 
-* Version 0.1.2: ``allowed_tags`` and ``allowed_attributes`` in CharField and TextField now default to []
+* Version 0.1.2:
+** ``allowed_tags`` and ``allowed_attributes`` in CharField and TextFieldnow default to []
