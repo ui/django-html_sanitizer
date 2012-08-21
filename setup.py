@@ -13,7 +13,8 @@ setup(
     long_description=open('README.rst').read(),
     zip_safe=False,
     include_package_data=True,
-    package_data = { '': ['README.rst'] },
+    package_data = { '': ['README.rst'],
+                    'sanitizer': ['templatetags/*.py']},
     install_requires=['django', 'bleach'],
     classifiers=[
         'Development Status :: 4 - Beta',
