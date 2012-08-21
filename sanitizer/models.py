@@ -45,5 +45,17 @@ class SanitizedTextField(models.TextField):
 
 if 'south' in settings.INSTALLED_APPS:
     from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ["^sanitizer\.models\.SanitizedCharField"])
-    add_introspection_rules([], ["^sanitizer\.models\.SanitizedTextField"])
+    rules = [
+      (
+        (SanitizedCharField, SanitizedTextField),
+        [],
+        {
+            "allowed_tags": ["_sanitizer_allowed_tags", {}],
+            "allowed_attributes": ["_sanitizer_allowed_attributes", {}],
+            "strip": ["_sanitizer_strip", {}],
+        },
+      )
+    ]
+
+    add_introspection_rules(rules, ["^sanitizer\.models\.SanitizedCharField"])
+    add_introspection_rules(rules, ["^sanitizer\.models\.SanitizedTextField"])
