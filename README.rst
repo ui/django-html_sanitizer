@@ -37,9 +37,12 @@ and attributes) based HTML sanitizer. Django sanitizer provides two model fields
 that automatically sanitizes text values; ``SanitizedCharField`` and 
 ``SanitizedTextField``.
 
-These fields accept three extra arguments:
+These fields accept extra arguments:
 - allowed_tags: a list of allowed HTML tags
-- allowed_attributes: a list of allowed HTML attributes
+- allowed_attributes: a list of allowed HTML attributes, or a dictionary of
+  tag keys with atttribute list for each key
+- allowed_styles: a list of allowed styles if "style" is one of the allowed 
+  attributes
 - strip: a boolean indicating whether offending tags/attributes should be escaped or stripped
 
 Here's how to use it in django models::
@@ -53,6 +56,9 @@ Here's how to use it in django models::
                                  allowed_attributes=['href', 'src'], strip=False)
         bar = SanitizedTextField(max_length=255, allowed_tags=['a', 'p', 'img'], 
                                  allowed_attributes=['href', 'src'], strip=False)
+        foo2 = SanitizedCharField(max_length=255, allowed_tags=['a', 'p', 'img'], 
+                                 allowed_attributes={'img':['src', 'style']}, 
+                                 allowed_styles=['width', 'height'], strip=False)
 
 
 Form Usage
@@ -69,6 +75,9 @@ Using django HTML sanitizer in django forms is very similar to model usage::
                                  allowed_attributes=['href', 'src'], strip=False)
         bar = SanitizedTextField(max_length=255, allowed_tags=['a', 'p', 'img'], 
                                  allowed_attributes=['href', 'src'], strip=False)
+        foo2 = SanitizedCharField(max_length=255, allowed_tags=['a', 'p', 'img'], 
+                                 allowed_attributes={'img':['src', 'style']}, 
+                                 allowed_styles=['width', 'height'], strip=False)
 
 
 Template Usage
@@ -82,13 +91,13 @@ Django sanitizer provides a few differents ways of cleaning HTML in templates.
 Example usage::
     
     {% load sanitizer %}
-    {% escape_html post.content "a, p, img" "href, src" %}
+    {% escape_html post.content "a, p, img" "href, src, style" "width"%}
 
 Assuming ``post.content`` contains the string
-'<a href ="#">Example</a><script>alert("x")</script>', the above tag will
+'<a href ="#" style="width:200px; height="400px">Example</a><script>alert("x")</script>', the above tag will
 output::
 
-    '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
+    '<a href ="#" style="width:200px;">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
 
 
 ``strip_html`` Template Tag
@@ -113,17 +122,19 @@ put these variables on settings.py:
 
 * ``SANITIZER_ALLOWED_TAGS`` - a list of allowed tags (defaults to an empty list)
 * ``SANITIZER_ALLOWED_ATTRIBUTES`` - a list of allowed attributes (defaults to an empty list)
+* ``SANITIZER_ALLOWED_STYLES`` - a list of allowed styles if the style attribute is set (defaults to an empty list)
 
 For example if we have ``SANITIZER_ALLOWED_TAGS = ['a']``, 
-``SANITIZER_ALLOWED_ATTRIBUTES = ['href']`` in settings.py, doing::
+``SANITIZER_ALLOWED_ATTRIBUTES = ['href']``, 
+``SANITIZER_ALLOWED_STYLES = ['width']`` in settings.py, doing::
     
     {% load sanitizer %}
     {{ post.content|escape_html }}
 
 If ``post.content`` contains the string
-'<a href ="#">Example</a><script>alert("x")</script>', it will give you::
+'<a href ="#" style="width:200px; height:400px">Example</a><script>alert("x")</script>', it will give you::
 
-    '<a href ="#">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
+    '<a href ="#" style="width=200px;">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
 
 
 ``strip_html`` Filter
@@ -145,4 +156,5 @@ If ``post.content`` contains the string
 Changelog
 =========
 
+* forked by CT: added in bleach "allowed_styles" capabilities
 * Version 0.1.2: ``allowed_tags`` and ``allowed_attributes`` in CharField and TextField now default to []
