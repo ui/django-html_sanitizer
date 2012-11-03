@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
 from django.test import TestCase
-#from django.test.utils import override_settings
+from django.test.utils import override_settings
 
 from sanitizer.templatetags.sanitizer import (sanitize, sanitize_allow,
     escape_html, strip_filter, strip_html)
@@ -31,7 +31,7 @@ class TestForm(forms.Form):
 
 class SanitizerTest(TestCase):
 
-    #@override_settings(SANITIZER_ALLOWED_TAGS=['a'])
+    @override_settings(SANITIZER_ALLOWED_TAGS=['a'])
     def test_sanitize(self):
         """ Test sanitize function in templatetags """
         self.assertEqual(sanitize('test<script></script>'), 
