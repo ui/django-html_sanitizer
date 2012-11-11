@@ -1,6 +1,7 @@
 Author:
-Selwin Ong
+* Selwin Ong
 
 Contributors:
-Gilang Chandrasa
-Grigoriy Beziuk
+* Gilang Chandrasa
+* Grigoriy Beziuk
+* cltrudeau (https://github.com/cltrudeau)
