@@ -38,12 +38,13 @@ that automatically sanitizes text values; ``SanitizedCharField`` and
 ``SanitizedTextField``.
 
 These fields accept extra arguments:
-- allowed_tags: a list of allowed HTML tags
-- allowed_attributes: a list of allowed HTML attributes, or a dictionary of
+
+* allowed_tags: a list of allowed HTML tags
+* allowed_attributes: a list of allowed HTML attributes, or a dictionary of
   tag keys with atttribute list for each key
-- allowed_styles: a list of allowed styles if "style" is one of the allowed 
+* allowed_styles: a list of allowed styles if "style" is one of the allowed 
   attributes
-- strip: a boolean indicating whether offending tags/attributes should be escaped or stripped
+* strip: a boolean indicating whether offending tags/attributes should be escaped or stripped
 
 Here's how to use it in django models::
     
@@ -99,6 +100,10 @@ output::
 
     '<a href ="#" style="width:200px;">Example</a>&lt;script&gt;alert("x")&lt;/script&gt;'
 
+On django 1.4 you could also use keyword arguments::
+
+    {% escape_html '<a href="">bar</a>' allowed_tags="a,img" allowed_attributes="href,src" allowed_styles="width" %}
+
 
 ``strip_html`` Template Tag
 ---------------------------
@@ -153,8 +158,20 @@ If ``post.content`` contains the string
 
     '<a href ="#">Example</a>alert("x")'
 
+
+
 Changelog
 =========
 
-* forked by CT: added in bleach "allowed_styles" capabilities
-* Version 0.1.2: ``allowed_tags`` and ``allowed_attributes`` in CharField and TextField now default to []
+Version 0.1.3
+-------------
+
+* ``CharField``, ``TextField``, ``strip_html`` and ``escape_html`` now support
+  ``allowed_styles`` (thanks `cltrudeau <https://github.com/cltrudeau)>`_, 
+* Added an example of template tag usage using kwargs now that Django 1.4 is out
+
+Version 0.1.2
+-------------
+
+* ``allowed_tags`` and ``allowed_attributes`` in CharField and TextField now default to []
+

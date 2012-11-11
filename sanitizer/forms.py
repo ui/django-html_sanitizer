@@ -8,7 +8,7 @@ class SanitizedCharField(forms.CharField):
     A subclass of CharField that escapes (or strip) HTML tags and attributes.
     """    
     def __init__(self, allowed_tags=[], allowed_attributes=[], 
-            allowed_styles=[],strip=False, *args, **kwargs):
+            allowed_styles=[], strip=False, *args, **kwargs):
         self._allowed_tags = allowed_tags
         self._allowed_attributes = allowed_attributes
         self._allowed_styles = allowed_styles

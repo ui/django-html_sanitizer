@@ -102,7 +102,7 @@ def escape_html(value, allowed_tags=[], allowed_attributes=[],
 
     On django 1.4 you could also use keyword arguments:
 
-    {% escape_html '<a href="">bar</a>' allowed_tags="a,img' allowed_attributes='href',src' %}    
+    {% escape_html '<a href="">bar</a>' allowed_tags="a,img' allowed_attributes='href',src' %} 
 
     """
     if isinstance(value, basestring):
