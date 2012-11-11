@@ -17,7 +17,8 @@ Dependencies
 Installation
 ============
 
-You'll first need to install the package::
+You'll first need to install the package (or download manually from
+`pypi <http://pypi.python.org/pypi/django-html_sanitizer>`_)::
     
     pip install django-html_sanitizer
 
