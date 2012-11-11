@@ -163,7 +163,7 @@ If ``post.content`` contains the string
 Changelog
 =========
 
-Version 0.1.3
+Version 0.1.4
 -------------
 
 * ``CharField``, ``TextField``, ``strip_html`` and ``escape_html`` now support
