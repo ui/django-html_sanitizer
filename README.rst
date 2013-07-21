@@ -69,14 +69,14 @@ Form Usage
 Using django HTML sanitizer in django forms is very similar to model usage::
     
     from django import forms
-    from sanitizer.forms import SanitizedCharField, SanitizedTextField
+    from sanitizer.forms import SanitizedCharField
 
     class MyForm(forms.Form):
         # Allow only <a>, <p>, <img> tags and "href" and "src" attributes
         foo = SanitizedCharField(max_length=255, allowed_tags=['a', 'p', 'img'], 
                                  allowed_attributes=['href', 'src'], strip=False)
-        bar = SanitizedTextField(max_length=255, allowed_tags=['a', 'p', 'img'], 
-                                 allowed_attributes=['href', 'src'], strip=False)
+        bar = SanitizedCharField(max_length=255, allowed_tags=['a', 'p', 'img'], 
+                                 allowed_attributes=['href', 'src'], strip=False, widget=forms.Textarea)
         foo2 = SanitizedCharField(max_length=255, allowed_tags=['a', 'p', 'img'], 
                                  allowed_attributes={'img':['src', 'style']}, 
                                  allowed_styles=['width', 'height'], strip=False)
