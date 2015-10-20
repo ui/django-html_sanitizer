@@ -5,6 +5,9 @@ from django import template
 
 import bleach
 
+import sys
+if sys.version_info[0] == 3:
+    basestring = str
 
 ALLOWED_TAGS = getattr(settings, 'SANITIZER_ALLOWED_TAGS', [])
 ALLOWED_ATTRIBUTES = getattr(settings, 'SANITIZER_ALLOWED_ATTRIBUTES', [])
