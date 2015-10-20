@@ -1,6 +1,11 @@
 from django.conf import settings
 from django.db import models
-from django.utils.encoding import smart_unicode
+
+import sys
+if sys.version_info[0] == 3:
+    from django.utils.encoding import smart_text as smart_unicode
+else:
+    from django.utils.encoding import smart_unicode
 
 import bleach
 
