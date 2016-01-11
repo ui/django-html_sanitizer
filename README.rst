@@ -164,6 +164,11 @@ If ``post.content`` contains the string
 Changelog
 =========
 
+Version 0.1.5
+-------------
+
+* Fixes for smart_unicode and basestring (python 3.x support)
+
 Version 0.1.4
 -------------
 
