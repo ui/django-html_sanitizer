@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
+
 
 setup(
     name='django-html_sanitizer',
@@ -7,8 +8,8 @@ setup(
     author='Selwin Ong',
     author_email='selwin.ong@gmail.com',
     packages=['sanitizer'],
-    package_data = { '': ['README.rst'],
-                    'sanitizer': ['templatetags/*.py']},
+    package_data={'': ['README.rst'],
+                  'sanitizer': ['templatetags/*.py']},
     url='https://github.com/ui/django-html_sanitizer',
     license='MIT',
     description='Provides a set of HTML cleaning utilities for django models, forms and templates.',
