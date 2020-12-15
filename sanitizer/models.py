@@ -48,6 +48,8 @@ class SanitizedTextField(models.TextField):
         return smart_unicode(value)
 
     def get_prep_value(self, value):
+        if value is None:
+            value = u''
         value = super(SanitizedTextField, self).get_prep_value(value)
         value = bleach.clean(value, tags=self._sanitizer_allowed_tags,
             attributes=self._sanitizer_allowed_attributes, 
