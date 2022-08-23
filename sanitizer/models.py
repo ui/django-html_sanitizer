@@ -3,7 +3,10 @@ from django.db import models
 
 import sys
 if sys.version_info[0] == 3:
-    from django.utils.encoding import smart_text as smart_unicode
+    try:
+        from django.utils.encoding import smart_str as smart_unicode
+    except ImportError:
+        from django.utils.encoding import smart_text as smart_unicode
 else:
     from django.utils.encoding import smart_unicode
 
